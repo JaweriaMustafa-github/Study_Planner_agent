@@ -1,4 +1,5 @@
 import streamlit as st 
+from datetime import datetime  # <-- ✅ Needed for date and day
 from agents.planner_agent import generate_study_plan
 from utils.pdf_export import generate_pdf
 
@@ -15,6 +16,13 @@ st.markdown("""
 
 st.title("📚 Study Planner Agent")
 
+# ✅ Display current date and day
+now = datetime.now()
+date_str = now.strftime("%Y-%m-%d")
+day_str = now.strftime("%A")
+st.markdown(f"**📅 Date:** {date_str} | **🗓️ Day:** {day_str}")
+
+# UI inputs
 start = st.slider("Start Hour", 6, 12, 8)
 end = st.slider("End Hour", 13, 22, 20)
 topic = st.text_input("What do you want motivation for?", "focus")
@@ -40,7 +48,7 @@ if st.session_state.schedule:
 
     st.write("🧾 Current Schedule:", st.session_state.schedule)
 
-    # Export Button Outside of "Generate" block
+    # PDF export with date/day already added in generate_pdf()
     pdf_buffer = generate_pdf(st.session_state.schedule)
     st.download_button(
         label="📥 Download Schedule as PDF",
