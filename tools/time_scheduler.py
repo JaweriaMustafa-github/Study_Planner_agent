@@ -1,16 +1,16 @@
 from datetime import datetime, timedelta
 
 def create_schedule(start_hour=8, end_hour=20, study_block=2, break_block=1):
-    schedule = []
+    schedule_blocks = []
     current_time = datetime.now().replace(hour=start_hour, minute=0)
 
     # Get today's date and weekday
-    date_str = current_time.strftime("%Y-%m-%D")
+    date_str = current_time.strftime("%Y-%m-%d")  # ✅ Fix: lowercase 'd'
     weekday_str = current_time.strftime("%A")
 
     while current_time.hour < end_hour:
         end_study = current_time + timedelta(hours=study_block)
-        schedule.append({
+        schedule_blocks.append({
             "type": "Study",
             "start": current_time.strftime("%I:%M %p"),
             "end": end_study.strftime("%I:%M %p")
@@ -21,7 +21,7 @@ def create_schedule(start_hour=8, end_hour=20, study_block=2, break_block=1):
             break
 
         end_break = current_time + timedelta(hours=break_block)
-        schedule.append({
+        schedule_blocks.append({
             "type": "Break",
             "start": current_time.strftime("%I:%M %p"),
             "end": end_break.strftime("%I:%M %p")
@@ -29,4 +29,10 @@ def create_schedule(start_hour=8, end_hour=20, study_block=2, break_block=1):
 
         current_time = end_break
 
-    return schedule, date_str, weekday_str
+    # ✅ Wrap everything in a dict so you don't get tuple errors
+    return {
+        "date": date_str,
+        "day": weekday_str,
+        "blocks": schedule_blocks
+    }
+
